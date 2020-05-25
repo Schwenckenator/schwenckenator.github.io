@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="interface.css"/>
+    </head>
+    <body>
+        <h1>Hello Factory</h1>
+        <h3>Resources</h3>
+        <p>
+            Iron Ore: <span id="ironOreCount">0</span><br/>
+            <button onclick="mineIron(1)">
+                Mine Iron Ore
+            </button>
+        </p>
+        
+        <p>
+            Iron Plates: <span id="ironPlateCount">0</span><br/>
+            <button onclick="smeltIron(1)">
+                Smelt Iron Plate
+            </button>
+        </p>
+
+
+        <h3>Buildings</h3>
+        <p>
+            Iron Miners: <span id="ironMiners">0</span><br/>
+            Cost: <span id="ironMinerCost">10 Iron Plates</span><br/>
+            <button onclick="constructIronMiner()">
+                Construct Iron Miner
+            </button>
+            <span id="ironMinerError"></span>
+        </p>
+        <p>
+            Iron Smelters: <span id="ironSmelters">0</span><br/>
+            Cost: <span id="ironSmelterCost">10 Iron Plates</span><br/>
+            <button onclick="constructIronSmelter()">
+                Construct Iron Smelter
+            </button>
+            <span id="ironSmelterError"></span>
+        </p>
+
+        <script type="text/javascript" src="factoryMain.js"></script>
+    </body>
+</html>
