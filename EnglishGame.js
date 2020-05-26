@@ -9,6 +9,11 @@ var sentenceY = 0;
 var sentenceDx = 0;
 var sentenceDy = 0.25;
 
+var pauseTicks = 10;
+var pauseRemaining = 0;
+var isPaused = false;
+
+var chosenAnswerIndex = 0;
 var answerX = [canvas.width * 0.25, canvas.width * 0.75];
 var answerY = canvas.height - 30;
 
@@ -31,6 +36,8 @@ var gameOver = false;
 
 var isLaser = 0;
 var laserColour = "green";
+var laserX;
+var laserY;
 
 function Init(){
     loadJSON(function(response){
@@ -47,9 +54,23 @@ function Update(){
 //#region Game
 
 function Game(){
-
-    sentenceX += sentenceDx;
-    sentenceY += sentenceDy;
+    if(isPaused){
+        if(pauseRemaining <= 0){
+            if(gameOver){
+                GameOver();
+            }else{
+                NextSentence();
+            }
+            isPaused = false;
+        }else{
+            pauseRemaining--;
+        }
+        
+    }else{
+        sentenceX += sentenceDx;
+        sentenceY += sentenceDy;
+    }
+    
 
     GetKeys();
     
@@ -58,6 +79,8 @@ function Game(){
         lives -= 1;
         sentenceY = 0;
     }
+
+    
 
     GameOverCheck();
 }
@@ -69,11 +92,13 @@ function GetKeys(){
         if(leftPressed){
             leftWasPressed = true; 
             answer = answerLeft;
+            chosenAnswerIndex = 0;
         }
         //Right pressed
         if(rightPressed){
             rightWasPressed = true;
             answer = answerRight;
+            chosenAnswerIndex = 1;
         }
 
         if(answer === correctAnswer){
@@ -82,35 +107,49 @@ function GetKeys(){
             Incorrect();
         }
 
-        sentenceY = 0;
-        sentenceDy = 0.25 + score * 0.05;
-        
-        GetSentence();
+        laserX = sentenceX + ctx.measureText(sentence).width/2;
+        laserY = sentenceY;
+
+        console.log("Laser X: "+laserX+"; Laser Y: "+laserY);
+
+        isPaused = true;
+        pauseRemaining = pauseTicks;
     }
 
 }
 
 function Correct(){
     score += 1;
-    isLaser = 10;
+    isLaser = 15;
     laserColour = "green";
 }
 
 function Incorrect(){
     lives -= 1;
-    isLaser = 10;
+    isLaser = 15;
     laserColour = "red";
+}
+
+function NextSentence(){
+    sentenceY = -10;
+    sentenceDy = 0.25 + score * 0.05;
+    
+    GetSentence();
 }
 
 function GameOverCheck(){
     if(lives < 0){
         lives = 0;
-        clearInterval(updateLoop);
-        sentenceY = -30;
         gameOver = true;
-        isLaser = 0;
-        Draw();
     }
+}
+
+function GameOver(){
+    clearInterval(updateLoop);
+    sentenceY = -30;
+    
+    isLaser = 0;
+    Draw();
 }
 
 function GetSentence(){
@@ -137,7 +176,7 @@ function StartGame(){
     score = 0;
     lives = 3;
     sentenceX = canvas.width/2;
-    sentenceY = 0;
+    sentenceY = -10;
     GetSentence();
     updateLoop = setInterval(Update, 10);
 }
@@ -153,7 +192,7 @@ function Draw(){
     drawUI();
     drawAnswers();
     if(isLaser > 0){
-        isLaser -= 1;
+        isLaser--;
         drawLaser();
     }
 }
@@ -165,6 +204,8 @@ function drawUI(){
     ctx.fillText("Lives: "+lives, 8, 40);
 
     ctx.beginPath();
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = "3";
     
     let x1 = 0;
     let x2 = canvas.width;
@@ -213,11 +254,26 @@ function drawAnswers(){
 }
 
 function drawLaser(){
+    
+
     ctx.beginPath();
-    ctx.fillStyle = laserColour;
-    ctx.rect(canvas.width/2 - 50, canvas.height/2- 50, 100, 100);
+    ctx.strokeStyle = laserColour;
+    //ctx.rect(canvas.width/2 - 50, canvas.height/2- 50, 100, 100);
+    ctx.lineWidth = 5;
+    ctx.moveTo(answerX[chosenAnswerIndex], answerY);
+    ctx.lineTo(laserX, laserY);
+    
+    //ctx.fill();
+    ctx.stroke();
+    ctx.closePath();
+    
+    ctx.beginPath();
+    ctx.fillStyle = "orange";
+    ctx.arc(laserX, laserY, 20, 0, Math.PI*2);
     ctx.fill();
     ctx.closePath();
+
+    
 }
 
 function centreX(text, x){
