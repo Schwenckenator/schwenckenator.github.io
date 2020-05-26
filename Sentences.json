@@ -1,23 +1,28 @@
 {
     "sentences":[
         {
-            "text":             "Hello, my name ___ John.",
+            "text":             "Hello, my name ___ %NOUN%.",
             "correctAnswer":    "is",
             "wrongAnswer":      "are"
         },
         
         {
             "text":             "I like ____.",
-            "correctAnswer":    "running",
-            "wrongAnswer":      "run"
+            "correctAnswer":    "%VERBING%",
+            "wrongAnswer":      "%VERBI%"
         }, 
         {
-            "text":             "I can ____.",
-            "correctAnswer":    "run",
-            "wrongAnswer":      "running"
+            "text":             "%NOUNS% can ____.",
+            "correctAnswer":    "%VERBI%",
+            "wrongAnswer":      "%VERBING%"
         },
         {
-            "text":             "He ____ cheese.",
+            "text":             "He ____ %NOUNS%.",
+            "correctAnswer":    "%VERBT%s",
+            "wrongAnswer":      "%VERBT%"
+        },
+        {
+            "text":             "She _____ %NOUNS%.",
             "correctAnswer":    "likes",
             "wrongAnswer":      "like"
         },
@@ -26,5 +31,48 @@
             "correctAnswer":    "are",
             "wrongAnswer":      "is"
         }   
+    ],
+
+    "adjectives":[
+        "black",
+        "big",
+        "small"
+    ],
+
+    "nounsSingular":[
+        "cat",
+        "dog",
+        "cheese",
+        "bread",
+        "sheep"
+    ],
+
+    "nounsPlural":[
+        "cats",
+        "dogs",
+        "sheep",
+        "cheese",
+        "bread"
+    ],
+
+    "verbsT":[
+        "love",
+        "like",
+        "clean",
+        "drink"
+    ],
+
+    "verbsI":[
+        "run",
+        "sing",
+        "talk",
+        "walk"
+    ],
+
+    "verbsGerund":[
+        "running",
+        "talking",
+        "walking"
+        
     ]
 }

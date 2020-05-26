@@ -1,7 +1,7 @@
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 
-var allSentences;
+var data;
 
 var sentenceX = canvas.width/2;
 var sentenceY = 0;
@@ -9,17 +9,12 @@ var sentenceY = 0;
 var sentenceDx = 0;
 var sentenceDy = 0.25;
 
-const answerX = [canvas.width * 0.25, canvas.width * 0.75];
-const answerY = canvas.height - 30;
+var answerX = [canvas.width * 0.25, canvas.width * 0.75];
+var answerY = canvas.height - 30;
 
 var score = 0;
 var lives = 3;
 
-//These will need to be put in a file
-//var sentence = "Hello, my name ___ John.";
-//var answerLeft = "are"
-//var answerRight = "is"
-//var correctAnswer = "is";
 var sentence;
 var answerLeft;
 var answerRight;
@@ -32,9 +27,14 @@ var leftWasPressed = false;
 
 var updateLoop;
 
+var gameOver = false;
+
+var isLaser = 0;
+var laserColour = "green";
+
 function Init(){
     loadJSON(function(response){
-        allSentences = JSON.parse(response);
+        data = JSON.parse(response);
         StartGame();
     });
 }
@@ -63,47 +63,74 @@ function Game(){
 }
 
 function GetKeys(){
-    if(leftPressed && !leftWasPressed){
-        if(answerLeft === correctAnswer){
-            score += 1;
-        }else{
-            lives -= 1;
+    if((leftPressed && !leftWasPressed) || (rightPressed && !rightWasPressed)){
+        let answer;
+        //Left pressed
+        if(leftPressed){
+            leftWasPressed = true; 
+            answer = answerLeft;
         }
+        //Right pressed
+        if(rightPressed){
+            rightWasPressed = true;
+            answer = answerRight;
+        }
+
+        if(answer === correctAnswer){
+            Correct();
+        }else{
+            Incorrect();
+        }
+
         sentenceY = 0;
-        leftWasPressed = true;
+        sentenceDy = 0.25 + score * 0.05;
+        
         GetSentence();
     }
 
-    if(rightPressed && !rightWasPressed){
-        if(answerRight === correctAnswer){
-            score += 1;
-        }else{
-            lives -= 1;
-        }
-        sentenceY = 0;
-        rightWasPressed = true
-        GetSentence();
-    }
+}
+
+function Correct(){
+    score += 1;
+    isLaser = 10;
+    laserColour = "green";
+}
+
+function Incorrect(){
+    lives -= 1;
+    isLaser = 10;
+    laserColour = "red";
 }
 
 function GameOverCheck(){
     if(lives < 0){
         lives = 0;
-        alert("Game OVER");
         clearInterval(updateLoop);
         sentenceY = -30;
+        gameOver = true;
+        isLaser = 0;
         Draw();
     }
 }
 
 function GetSentence(){
-    let index = Math.floor(Math.random() * allSentences.sentences.length);
-    sentence = allSentences.sentences[index].text;
-    correctAnswer = allSentences.sentences[index].correctAnswer;
+    let index = RandIndex(data.sentences.length);
+    sentence = ProcessText(data.sentences[index].text);
+
+    sentence = sentence[0].toUpperCase() + sentence.slice(1);
+
+    //sentence = allSentences.sentences[index].text;
+    correctAnswer = ProcessText(data.sentences[index].correctAnswer);
     
-    answerLeft = allSentences.sentences[index].correctAnswer;
-    answerRight = allSentences.sentences[index].wrongAnswer;
-    
+    //Randomly order the answers
+    let order = Math.random() >= 0.5;
+    if(order){
+        answerLeft = correctAnswer;
+        answerRight = ProcessText(data.sentences[index].wrongAnswer);
+    }else{
+        answerRight = correctAnswer;
+        answerLeft = ProcessText(data.sentences[index].wrongAnswer);
+    }
 }
 
 function StartGame(){
@@ -125,6 +152,10 @@ function Draw(){
     drawSentence();
     drawUI();
     drawAnswers();
+    if(isLaser > 0){
+        isLaser -= 1;
+        drawLaser();
+    }
 }
 
 function drawUI(){
@@ -150,25 +181,47 @@ function drawUI(){
     ctx.lineTo(x, y2);
     ctx.stroke();
     ctx.closePath();
+
+    if(gameOver){
+        ctx.font = "48px Arial";
+        ctx.fillStyle = "#000000";
+        let txt = "GAME OVER";
+        x = centreX(txt, canvas.width/2);
+        ctx.fillText("GAME OVER",x,canvas.height/2);
+    }
 }
 
 function drawSentence(){
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
-    sentenceX = (canvas.width/2) -  (ctx.measureText(sentence).width/2)
+    //sentenceX = (canvas.width/2) -  (ctx.measureText(sentence).width/2)
+    sentenceX = centreX(sentence, canvas.width/2);
     ctx.fillText(sentence, sentenceX, sentenceY);
 }
 
 function drawAnswers(){
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
-
-    ctx.fillText(answerLeft, answerX[0], answerY);
+    let x = centreX(answerLeft, canvas.width * 0.25);
+    ctx.fillText(answerLeft, x, answerY);
     
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
-    ctx.fillText(answerRight, answerX[1], answerY);
+    x = centreX(answerRight, canvas.width * 0.75);
+    ctx.fillText(answerRight, x, answerY);
 
+}
+
+function drawLaser(){
+    ctx.beginPath();
+    ctx.fillStyle = laserColour;
+    ctx.rect(canvas.width/2 - 50, canvas.height/2- 50, 100, 100);
+    ctx.fill();
+    ctx.closePath();
+}
+
+function centreX(text, x){
+    return x - (ctx.measureText(text).width/2);
 }
 
 //#endregion
@@ -199,7 +252,7 @@ function keyUpHandler(e){
 
 //#endregion
 
-//#region LoadFile
+//#region Processing
 
 function loadJSON(callback){
     var xobj = new XMLHttpRequest();
@@ -211,6 +264,46 @@ function loadJSON(callback){
         }
     };
     xobj.send(null);
+}
+/**
+ * @param {String} text - The date
+ */
+function ProcessText(text){
+    if(!text.includes("%")){
+        return text;
+    }
+
+    // Text includes a % sign
+    
+    let finishedText = text;
+    while(finishedText.includes("%")){
+        let str = finishedText;
+        let wildCard = str.split("%")[1];
+        let replacement = "";
+        
+        if(wildCard == "NOUN"){
+            replacement = data.nounsSingular[RandIndex(data.nounsSingular.length)];
+        }else if(wildCard == "NOUNS"){
+            replacement = data.nounsPlural[RandIndex(data.nounsPlural.length)];
+        }else if(wildCard == "VERBT"){
+            replacement = data.verbsT[RandIndex(data.verbsT.length)];
+        }else if(wildCard == "VERBI"){
+            replacement = data.verbsI[RandIndex(data.verbsI.length)];
+        }else if(wildCard == "VERBING"){
+            replacement = data.verbsGerund[RandIndex(data.verbsGerund.length)];
+        }else if(wildCard == "ADJECTIVE"){
+            replacement = data.adjectives[RandIndex(data.adjectives.length)];
+        }
+        
+        finishedText = finishedText.replace("%"+wildCard+"%", replacement);
+    }
+
+    return finishedText;
+    
+}
+
+function RandIndex(max){
+    return Math.floor(Math.random() * max);
 }
 
 //#endregion
