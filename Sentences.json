@@ -1,0 +1,15 @@
+{
+    "sentences":[
+        {
+            "text":         "Hello, my name ___ John.",
+            "correctAnswer":    "is",
+            "wrongAnswer":      "are"
+        },
+        
+        {
+            "text":         "I like ____",
+            "correctAnswer":    "running",
+            "wrongAnswer":      "run"
+        }    
+    ]
+}
