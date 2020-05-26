@@ -1,15 +1,30 @@
 {
     "sentences":[
         {
-            "text":         "Hello, my name ___ John.",
+            "text":             "Hello, my name ___ John.",
             "correctAnswer":    "is",
             "wrongAnswer":      "are"
         },
         
         {
-            "text":         "I like ____",
+            "text":             "I like ____.",
             "correctAnswer":    "running",
             "wrongAnswer":      "run"
-        }    
+        }, 
+        {
+            "text":             "I can ____.",
+            "correctAnswer":    "run",
+            "wrongAnswer":      "running"
+        },
+        {
+            "text":             "He ____ cheese.",
+            "correctAnswer":    "likes",
+            "wrongAnswer":      "like"
+        },
+        {
+            "text":             "How ___ you?",
+            "correctAnswer":    "are",
+            "wrongAnswer":      "is"
+        }   
     ]
 }

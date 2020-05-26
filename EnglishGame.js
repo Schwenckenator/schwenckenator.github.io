@@ -47,9 +47,6 @@ function Update(){
 //#region Game
 
 function Game(){
-    if(sentence == ""){
-        GetSentence();
-    }
 
     sentenceX += sentenceDx;
     sentenceY += sentenceDy;
@@ -114,6 +111,7 @@ function StartGame(){
     lives = 3;
     sentenceX = canvas.width/2;
     sentenceY = 0;
+    GetSentence();
     updateLoop = setInterval(Update, 10);
 }
 
