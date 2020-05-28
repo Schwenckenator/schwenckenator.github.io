@@ -3,13 +3,11 @@ var ctx = canvas.getContext("2d");
 
 var data;
 
-var sentenceX = canvas.width/2;
-var sentenceY = 0;
+var sentenceX = canvas.width/2; var sentenceY = 0;
 
-var sentenceDx = 0;
-var sentenceDy = 0.25;
+var sentenceDx = 0; var sentenceDy = 0.25;
 
-var pauseTicks = 10;
+var pauseTicks = 15;
 var pauseRemaining = 0;
 var isPaused = false;
 
@@ -32,7 +30,7 @@ var leftWasPressed = false;
 
 var updateLoop;
 
-var gameOver = false;
+var isGameOver = false;
 
 var isLaser = 0;
 var laserColour = "green";
@@ -43,12 +41,28 @@ function Init(){
     loadJSON(function(response){
         data = JSON.parse(response);
         StartGame();
+        updateLoop = setInterval(Update, 10);
     });
+}
+
+function StartGame(){
+    isGameOver = false;
+    score = 0;
+    lives = 3;
+    sentenceX = canvas.width/2;
+    sentenceY = -10;
+    sentenceDx = 0;
+    sentenceDy = 0.25;
+
+    GetSentence();
 }
 
 function Update(){
     Draw();
-    Game();
+    
+    if(!isGameOver){
+        Game();
+    }
 }
 
 //#region Game
@@ -56,7 +70,7 @@ function Update(){
 function Game(){
     if(isPaused){
         if(pauseRemaining <= 0){
-            if(gameOver){
+            if(GameOverCheck()){
                 GameOver();
             }else{
                 NextSentence();
@@ -70,19 +84,14 @@ function Game(){
         sentenceX += sentenceDx;
         sentenceY += sentenceDy;
     }
-    
 
     GetKeys();
-    
 
     if(sentenceY > canvas.height - 60){
         lives -= 1;
         sentenceY = 0;
     }
-
     
-
-    GameOverCheck();
 }
 
 function GetKeys(){
@@ -138,18 +147,14 @@ function NextSentence(){
 }
 
 function GameOverCheck(){
-    if(lives < 0){
-        lives = 0;
-        gameOver = true;
-    }
+    return lives < 0;
 }
 
 function GameOver(){
-    clearInterval(updateLoop);
+    isGameOver = true;
+    lives = 0;
     sentenceY = -30;
-    
     isLaser = 0;
-    Draw();
 }
 
 function GetSentence(){
@@ -172,14 +177,7 @@ function GetSentence(){
     }
 }
 
-function StartGame(){
-    score = 0;
-    lives = 3;
-    sentenceX = canvas.width/2;
-    sentenceY = -10;
-    GetSentence();
-    updateLoop = setInterval(Update, 10);
-}
+
 
 //#endregion
 
@@ -223,12 +221,16 @@ function drawUI(){
     ctx.stroke();
     ctx.closePath();
 
-    if(gameOver){
+    if(isGameOver){
         ctx.font = "48px Arial";
         ctx.fillStyle = "#000000";
         let txt = "GAME OVER";
         x = centreX(txt, canvas.width/2);
-        ctx.fillText("GAME OVER",x,canvas.height/2);
+        ctx.fillText(txt,x,canvas.height/2);
+        ctx.font = "24px Arial"
+        txt = "Press Enter to restart.";
+        x = centreX(txt, canvas.width/2);
+        ctx.fillText(txt,x,canvas.height/2 + 40);
     }
 }
 
@@ -237,6 +239,7 @@ function drawSentence(){
     ctx.fillStyle = "#000000";
     //sentenceX = (canvas.width/2) -  (ctx.measureText(sentence).width/2)
     sentenceX = centreX(sentence, canvas.width/2);
+    //console.log(sentenceX +" "+ sentenceY);
     ctx.fillText(sentence, sentenceX, sentenceY);
 }
 
@@ -293,6 +296,9 @@ function keyDownHandler(e){
     if(e.key == "Left" || e.key == "ArrowLeft"){
         leftPressed = true;
     }
+    if(e.key == "Enter" && isGameOver){
+        StartGame();
+    }
 }
 
 function keyUpHandler(e){
@@ -341,6 +347,8 @@ function ProcessText(text){
             replacement = data.nounsSingular[RandIndex(data.nounsSingular.length)];
         }else if(wildCard == "NOUNS"){
             replacement = data.nounsPlural[RandIndex(data.nounsPlural.length)];
+        }else if(wildCard == "ANOUN"){
+            replacement = data.nounsAnimate[RandIndex(data.nounsAnimate.length)];
         }else if(wildCard == "VERBT"){
             replacement = data.verbsT[RandIndex(data.verbsT.length)];
         }else if(wildCard == "VERBI"){

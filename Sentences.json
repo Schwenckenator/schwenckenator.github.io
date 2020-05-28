@@ -30,6 +30,31 @@
             "text":             "How ___ you?",
             "correctAnswer":    "are",
             "wrongAnswer":      "is"
+        },
+        {
+            "text":             "A %ANOUN% is ______ to music.",
+            "correctAnswer":    "listening",
+            "wrongAnswer":      "listen"
+        },
+        {
+            "text":             "A %ANOUN% is ______ off the %NOUN%.",
+            "correctAnswer":    "getting",
+            "wrongAnswer":      "get"
+        },
+        {
+            "text":             "A %ANOUN% is ______ on a %NOUN%.",
+            "correctAnswer":    "getting",
+            "wrongAnswer":      "get"
+        },
+        {
+            "text":             "A %ANOUN% is ______ up a %NOUN%.",
+            "correctAnswer":    "picking",
+            "wrongAnswer":      "pick"
+        },
+        {
+            "text":             "A %ANOUN% is ______ %NOUNS%.",
+            "correctAnswer":    "%VERBING%",
+            "wrongAnswer":      "%VERBT%"
         }   
     ],
 
@@ -39,12 +64,20 @@
         "small"
     ],
 
+    "nounsAnimate":[
+        "boy",
+        "girl",
+        "man",
+        "woman"
+    ],
+
     "nounsSingular":[
         "cat",
         "dog",
         "cheese",
         "bread",
-        "sheep"
+        "sheep",
+        "water"
     ],
 
     "nounsPlural":[
@@ -52,7 +85,8 @@
         "dogs",
         "sheep",
         "cheese",
-        "bread"
+        "bread",
+        "water"
     ],
 
     "verbsT":[
