@@ -3,13 +3,23 @@ var ctx = canvas.getContext("2d");
 
 var data;
 
+var sentenceStartY = -10;
 var sentenceX = canvas.width/2; var sentenceY = 0;
+var sentenceXOffset = 0;
 
-var sentenceDx = 0; var sentenceDy = 0.25;
+var baseSentenceDx = 0; var baseSentenceDy = 0.25;
+var sentenceDx = baseSentenceDx; var sentenceDy = baseSentenceDy;
+var wrongSentenceDdy = 0.05;
+var gotWrongAnswer = false;
 
 var pauseTicks = 15;
 var pauseRemaining = 0;
 var isPaused = false;
+var ticks = 0;
+var sinOffset = 0;
+var baseFreq = 0.01;
+var changeFreq = 0.001;
+var freq = baseFreq;
 
 var chosenAnswerIndex = 0;
 var answerX = [canvas.width * 0.25, canvas.width * 0.75];
@@ -32,6 +42,7 @@ var updateLoop;
 
 var isGameOver = false;
 
+var canLaser = true;
 var isLaser = 0;
 var laserColour = "green";
 var laserX;
@@ -50,9 +61,10 @@ function StartGame(){
     score = 0;
     lives = 3;
     sentenceX = canvas.width/2;
-    sentenceY = -10;
-    sentenceDx = 0;
-    sentenceDy = 0.25;
+    sentenceY = sentenceStartY;
+    sentenceDx = baseSentenceDx;
+    sentenceDy = baseSentenceDy;
+    freq = baseFreq;
 
     GetSentence();
 }
@@ -70,28 +82,52 @@ function Update(){
 function Game(){
     if(isPaused){
         if(pauseRemaining <= 0){
-            if(GameOverCheck()){
-                GameOver();
-            }else{
-                NextSentence();
-            }
+            NextSentence();
+            // if(GameOverCheck()){
+            //     GameOver();
+            // }else{
+            //     NextSentence();
+            // }
             isPaused = false;
         }else{
             pauseRemaining--;
         }
-        
-    }else{
-        sentenceX += sentenceDx;
-        sentenceY += sentenceDy;
+        return;
     }
 
-    GetKeys();
+    if(gotWrongAnswer){
+        sentenceDy += wrongSentenceDdy;
+    }else{
+        let amp = 50;
+
+        sentenceXOffset = amp*(Math.sin(freq*ticks + sinOffset));
+        console.log(freq);
+    }
+    //console.log(sentenceDx);
+
+    sentenceY += sentenceDy;
+    
+    //console.log(sentenceXOffset);
+    
+    if(canLaser){
+        GetKeys();
+    }
+    
 
     if(sentenceY > canvas.height - 60){
         lives -= 1;
-        sentenceY = 0;
+        //sentenceY = sentenceStartY;
+        CalculateDy();
+        canLaser = true;
+        gotWrongAnswer = false;
+        
+        if(GameOverCheck()){
+            GameOver();
+        }else{
+            NextSentence();
+        }
     }
-    
+    ticks++;
 }
 
 function GetKeys(){
@@ -112,38 +148,48 @@ function GetKeys(){
 
         if(answer === correctAnswer){
             Correct();
+            isPaused = true;
+            pauseRemaining = pauseTicks;
         }else{
             Incorrect();
         }
-
-        laserX = sentenceX + ctx.measureText(sentence).width/2;
+        isLaser = pauseTicks;
+        laserX = sentenceX + sentenceXOffset + ctx.measureText(sentence).width/2;
         laserY = sentenceY;
 
         console.log("Laser X: "+laserX+"; Laser Y: "+laserY);
 
-        isPaused = true;
-        pauseRemaining = pauseTicks;
+        //isPaused = true;
+        //pauseRemaining = pauseTicks;
     }
 
 }
 
 function Correct(){
     score += 1;
-    isLaser = 15;
     laserColour = "green";
 }
 
 function Incorrect(){
-    lives -= 1;
-    isLaser = 15;
+    //lives -= 1;
     laserColour = "red";
+    canLaser = false;
+    gotWrongAnswer = true;
 }
 
 function NextSentence(){
-    sentenceY = -10;
-    sentenceDy = 0.25 + score * 0.05;
+    sentenceY = sentenceStartY;
+    sentenceXOffset = 0;
+    ticks = 0;
+    sinOffset = Math.random() * 2 * Math.PI;
+    freq = baseFreq + score * changeFreq;
+    CalculateDy();
     
     GetSentence();
+}
+
+function CalculateDy(){
+    sentenceDy = 0.25 + score * 0.05;
 }
 
 function GameOverCheck(){
@@ -240,7 +286,7 @@ function drawSentence(){
     //sentenceX = (canvas.width/2) -  (ctx.measureText(sentence).width/2)
     sentenceX = centreX(sentence, canvas.width/2);
     //console.log(sentenceX +" "+ sentenceY);
-    ctx.fillText(sentence, sentenceX, sentenceY);
+    ctx.fillText(sentence, sentenceX+sentenceXOffset, sentenceY);
 }
 
 function drawAnswers(){
