@@ -9,17 +9,17 @@
         {
             "text":             "I like ____.",
             "correctAnswer":    "%VERBING%",
-            "wrongAnswer":      "%VERBI%"
+            "wrongAnswer":      "%VERB_I%"
         }, 
         {
             "text":             "%NOUNS% can ____.",
-            "correctAnswer":    "%VERBI%",
+            "correctAnswer":    "%VERB_I%",
             "wrongAnswer":      "%VERBING%"
         },
         {
             "text":             "He ____ %NOUNS%.",
-            "correctAnswer":    "%VERBT%s",
-            "wrongAnswer":      "%VERBT%"
+            "correctAnswer":    "%VERB_T%s",
+            "wrongAnswer":      "%VERB_T%"
         },
         {
             "text":             "She _____ %NOUNS%.",
@@ -32,81 +32,118 @@
             "wrongAnswer":      "is"
         },
         {
-            "text":             "A %ANOUN% is ______ to music.",
+            "text":             "A %ANI_NOUN% is ______ to music.",
             "correctAnswer":    "listening",
             "wrongAnswer":      "listen"
         },
         {
-            "text":             "A %ANOUN% is ______ off the %NOUN%.",
+            "text":             "A %ANI_NOUN% is ______ off the %NOUN%.",
             "correctAnswer":    "getting",
             "wrongAnswer":      "get"
         },
         {
-            "text":             "A %ANOUN% is ______ on a %NOUN%.",
+            "text":             "A %ANI_NOUN% is ______ on a %NOUN%.",
             "correctAnswer":    "getting",
             "wrongAnswer":      "get"
         },
         {
-            "text":             "A %ANOUN% is ______ up a %NOUN%.",
+            "text":             "A %ANI_NOUN% is ______ up a %NOUN%.",
             "correctAnswer":    "picking",
             "wrongAnswer":      "pick"
         },
         {
-            "text":             "A %ANOUN% is ______ %NOUNS%.",
+            "text":             "I want a _____ hat.",
+            "correctAnswer":    "%ADJ%",
+            "wrongAnswer":      "pick"
+        },
+        {
+            "text":             "A %ANI_NOUN% is ______ %NOUNS%.",
             "correctAnswer":    "%VERBING%",
-            "wrongAnswer":      "%VERBT%"
+            "wrongAnswer":      "%VERB_T%"
         }   
     ],
 
-    "adjectives":[
-        "black",
-        "big",
-        "small"
-    ],
-
-    "nounsAnimate":[
-        "boy",
-        "girl",
-        "man",
-        "woman"
-    ],
-
-    "nounsSingular":[
-        "cat",
-        "dog",
-        "cheese",
-        "bread",
-        "sheep",
-        "water"
-    ],
-
-    "nounsPlural":[
-        "cats",
-        "dogs",
-        "sheep",
-        "cheese",
-        "bread",
-        "water"
-    ],
-
-    "verbsT":[
-        "love",
-        "like",
-        "clean",
-        "drink"
-    ],
-
-    "verbsI":[
-        "run",
-        "sing",
-        "talk",
-        "walk"
-    ],
-
-    "verbsGerund":[
-        "running",
-        "talking",
-        "walking"
-        
+    "partsOfSpeech":[
+        {
+            "name": "adverb",
+            "keyword": "ADV",
+            "words":[
+                "fast",
+                "slowly",
+                "well"
+            ]
+        },
+        {
+            "name": "adjective",
+            "keyword": "ADJ",
+            "words":[
+                "black",
+                "big",
+                "small"
+            ]
+        },
+        {
+            "name": "nounAnimate",
+            "keyword": "ANI_NOUN",
+            "words":[
+                "boy",
+                "girl",
+                "man",
+                "woman"
+            ]
+        },
+        {
+            "name": "nounSingular",
+            "keyword": "NOUN",
+            "words":[
+                "cat",
+                "dog",
+                "cheese",
+                "bread",
+                "sheep",
+                "water"
+            ]
+        },
+        {
+            "name": "nounPlural",
+            "keyword": "NOUNS",
+            "words":[
+                "cats",
+                "dogs",
+                "sheep",
+                "cheese",
+                "bread",
+                "water"
+            ]
+        },
+        {
+            "name": "verbTrans",
+            "keyword": "VERB_T",
+            "words":[
+                "love",
+                "like",
+                "clean",
+                "drink"
+            ]
+        },
+        {
+            "name": "verbIntrans",
+            "keyword": "VERB_I",
+            "words":[
+                "run",
+                "sing",
+                "talk",
+                "walk"
+            ]
+        },
+        {
+            "name": "verbGerund",
+            "keyword": "VERBING",
+            "words":[
+                "running",
+                "talking",
+                "walking"
+            ]
+        }
     ]
 }

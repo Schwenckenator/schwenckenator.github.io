@@ -342,21 +342,12 @@ function ProcessText(text){
         let str = finishedText;
         let wildCard = str.split("%")[1];
         let replacement = "";
-        
-        if(wildCard == "NOUN"){
-            replacement = data.nounsSingular[RandIndex(data.nounsSingular.length)];
-        }else if(wildCard == "NOUNS"){
-            replacement = data.nounsPlural[RandIndex(data.nounsPlural.length)];
-        }else if(wildCard == "ANOUN"){
-            replacement = data.nounsAnimate[RandIndex(data.nounsAnimate.length)];
-        }else if(wildCard == "VERBT"){
-            replacement = data.verbsT[RandIndex(data.verbsT.length)];
-        }else if(wildCard == "VERBI"){
-            replacement = data.verbsI[RandIndex(data.verbsI.length)];
-        }else if(wildCard == "VERBING"){
-            replacement = data.verbsGerund[RandIndex(data.verbsGerund.length)];
-        }else if(wildCard == "ADJECTIVE"){
-            replacement = data.adjectives[RandIndex(data.adjectives.length)];
+
+        for(const partOfSpeech of data.partsOfSpeech){
+            if(wildCard == partOfSpeech.keyword){
+                replacement = partOfSpeech.words[RandIndex(partOfSpeech.words.length)];
+                break;
+            }
         }
         
         finishedText = finishedText.replace("%"+wildCard+"%", replacement);
