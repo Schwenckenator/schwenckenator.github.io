@@ -1,66 +1,85 @@
 {
     "sentences":[
         {
+            "text":             "A %ANI_NOUN% is ______ %NOUNS%.",
+            "correctAnswer":    "%VERBING_T%",
+            "wrongAnswer":      "%VERB_T%"
+        },
+        {
+            "text":             "A %ANI_NOUN% is ______ a %NOUN%.",
+            "correctAnswer":    "%VERBING_T%",
+            "wrongAnswer":      "%VERB_T%"
+        },
+        {
+            "text":             "A %ANI_NOUN% is ______ the %NOUN%.",
+            "correctAnswer":    "%VERBING_T%",
+            "wrongAnswer":      "%VERB_T%"
+        },
+        {
+            "text":             "A %ANI_NOUN% is ______ the %NOUNS%.",
+            "correctAnswer":    "%VERBING_T%",
+            "wrongAnswer":      "%VERB_T%"
+        },
+        {
+            "text":             "A %ANI_NOUN% is ______ some %NOUNS%.",
+            "correctAnswer":    "%VERBING_T%",
+            "wrongAnswer":      "%VERB_T%"
+        },
+        {
+            "text":             "A %ANI_NOUN% is ______ with a %NOUN%.",
+            "correctAnswer":    "%VERBING_T%",
+            "wrongAnswer":      "%VERB_T%"
+        },
+        {
+            "text":             "A %ANI_NOUN% is ______ with %NOUNS%.",
+            "correctAnswer":    "%VERBING_T%",
+            "wrongAnswer":      "%VERB_T%"
+        },
+        {
             "text":             "Hello, my name ___ %NOUN%.",
             "correctAnswer":    "is",
             "wrongAnswer":      "are"
         },
-        
         {
             "text":             "I like ____.",
-            "correctAnswer":    "%VERBING%",
+            "correctAnswer":    "%VERBING_I%",
             "wrongAnswer":      "%VERB_I%"
+        },
+        {
+            "text":             "I like ____.",
+            "correctAnswer":    "%NOUNS%",
+            "wrongAnswer":      "%VERB_I%"
+        },
+        {
+            "text":             "I want a _____ %NOUN%.",
+            "correctAnswer":    "%ADJ%",
+            "wrongAnswer":      "%VERB_T%"
         }, 
+        {
+            "text":             "%NOUNS% can ____ %ADV%.",
+            "correctAnswer":    "%VERB_I%",
+            "wrongAnswer":      "%VERBING_I%"
+        },
         {
             "text":             "%NOUNS% can ____.",
             "correctAnswer":    "%VERB_I%",
-            "wrongAnswer":      "%VERBING%"
+            "wrongAnswer":      "%VERBING_I%"
         },
         {
             "text":             "He ____ %NOUNS%.",
-            "correctAnswer":    "%VERB_T%s",
+            "correctAnswer":    "%VERB_TS%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
             "text":             "She _____ %NOUNS%.",
-            "correctAnswer":    "likes",
-            "wrongAnswer":      "like"
+            "correctAnswer":    "%VERB_TS%",
+            "wrongAnswer":      "%VERB_T%"
         },
         {
             "text":             "How ___ you?",
             "correctAnswer":    "are",
             "wrongAnswer":      "is"
-        },
-        {
-            "text":             "A %ANI_NOUN% is ______ to music.",
-            "correctAnswer":    "listening",
-            "wrongAnswer":      "listen"
-        },
-        {
-            "text":             "A %ANI_NOUN% is ______ off the %NOUN%.",
-            "correctAnswer":    "getting",
-            "wrongAnswer":      "get"
-        },
-        {
-            "text":             "A %ANI_NOUN% is ______ on a %NOUN%.",
-            "correctAnswer":    "getting",
-            "wrongAnswer":      "get"
-        },
-        {
-            "text":             "A %ANI_NOUN% is ______ up a %NOUN%.",
-            "correctAnswer":    "picking",
-            "wrongAnswer":      "pick"
-        },
-        {
-            "text":             "I want a _____ hat.",
-            "correctAnswer":    "%ADJ%",
-            "wrongAnswer":      "pick"
-        },
-        {
-            "text":             "A %ANI_NOUN% is ______ %NOUNS%.",
-            "correctAnswer":    "%VERBING%",
-            "wrongAnswer":      "%VERB_T%"
-        }   
+        }
     ],
 
     "partsOfSpeech":[
@@ -70,7 +89,8 @@
             "words":[
                 "fast",
                 "slowly",
-                "well"
+                "well",
+                "badly"
             ]
         },
         {
@@ -93,6 +113,16 @@
             ]
         },
         {
+            "name": "nounAnimatePlural",
+            "keyword": "ANI_NOUNS",
+            "words":[
+                "boys",
+                "girls",
+                "men",
+                "women"
+            ]
+        },
+        {
             "name": "nounSingular",
             "keyword": "NOUN",
             "words":[
@@ -101,7 +131,60 @@
                 "cheese",
                 "bread",
                 "sheep",
-                "water"
+                "train",
+                "bus",
+                "book",
+                "phone",
+                "announcement",
+                "cart",
+                "trolley",
+                "drink",
+                "hamburger",
+                "jacket",
+                "tent",
+                "price",
+                "floor",
+                "copy machine",
+                "flower",
+                "plant",
+                "horse",
+                "bench",
+                "map",
+                "poster",
+                "box",
+                "elevator",
+                "bird",
+                "picture",
+                "book",
+                "hand",
+                "bottle",
+                "shelf",
+                "window",
+                "bag",
+                "song",
+                "newspaper",
+                "timetable",
+                "bike",
+                "tricycle",
+                "bicycle",
+                "car",
+                "door",
+                "baby",
+                "computer",
+                "sandwich",
+                "table",
+                "lamp",
+                "fence",
+                "letter",
+                "violin",
+                "curtain",
+                "screen",
+                "blackboard",
+                "plate",
+                "fish",
+                "road",
+                "bus",
+                "shoe"
             ]
         },
         {
@@ -113,7 +196,63 @@
                 "sheep",
                 "cheese",
                 "bread",
-                "water"
+                "water",
+                "music",
+                "books",
+                "phones",
+                "drinks",
+                "hamburgers",
+                "sunglasses",
+                "jackets",
+                "tents",
+                "ice cream",
+                "prices",
+                "floors",
+                "money",
+                "copy machines",
+                "flowers",
+                "plants",
+                "horses",
+                "benches",
+                "maps",
+                "posters",
+                "boxes",
+                "elevators",
+                "birds",
+                "pictures",
+                "hands",
+                "bottles",
+                "shelves",
+                "windows",
+                "bags",
+                "songs",
+                "newspapers",
+                "timetables",
+                "bikes",
+                "tricycles",
+                "bicycles",
+                "cars",
+                "doors",
+                "babies",
+                "computers",
+                "sandwiches",
+                "garbage",
+                "tables",
+                "lamps",
+                "fences",
+                "letters",
+                "violins",
+                "curtains",
+                "screens",
+                "blackboards",
+                "plates",
+                "fish",
+                "stairs",
+                "roads",
+                "buses",
+                "shoes",
+                "trash",
+                "rubbish"
             ]
         },
         {
@@ -123,7 +262,115 @@
                 "love",
                 "like",
                 "clean",
-                "drink"
+                "drink",
+                "get",
+                "get off",
+                "get on",
+                "make",
+                "push",
+                "carry",
+                "cook",
+                "take",
+                "put on",
+                "listen to",
+                "set up",
+                "eat",
+                "write down",
+                "count",
+                "use",
+                "plant",
+                "brush",
+                "fix",
+                "look at",
+                "pull",
+                "wait for",
+                "feed",
+                "draw",
+                "read",
+                "chase",
+                "shake",
+                "wave",
+                "choose",
+                "sing",
+                "ride",
+                "drive",
+                "close",
+                "wash",
+                "hold",
+                "buy",
+                "pick up",
+                "borrow",
+                "wipe",
+                "hang",
+                "paint",
+                "lift",
+                "receive",
+                "play",
+                "open",
+                "close",
+                "come",
+                "go",
+                "cross",
+                "throw"
+            ]
+        },
+        {
+            "name": "verbTrans3S",
+            "keyword": "VERB_TS",
+            "words":[
+                "loves",
+                "likes",
+                "cleans",
+                "drinks",
+                "gets",
+                "gets off",
+                "gets on",
+                "makes",
+                "pushes",
+                "carries",
+                "cooks",
+                "takes",
+                "puts on",
+                "listens to",
+                "sets up",
+                "eats",
+                "writes down",
+                "counts",
+                "uses",
+                "plants",
+                "brushes",
+                "fixes",
+                "looks at",
+                "pulls",
+                "waits for",
+                "feeds",
+                "draws",
+                "reads",
+                "chases",
+                "shakes",
+                "waves",
+                "chooses",
+                "sings",
+                "rides",
+                "drives",
+                "closes",
+                "washes",
+                "holds",
+                "buys",
+                "picks up",
+                "borrows",
+                "wipes",
+                "hangs",
+                "paints",
+                "lifts",
+                "receives",
+                "plays",
+                "opens",
+                "closes",
+                "comes",
+                "goes",
+                "crosses",
+                "throws"
             ]
         },
         {
@@ -133,16 +380,98 @@
                 "run",
                 "sing",
                 "talk",
-                "walk"
+                "walk",
+                "count",
+                "wait",
+                "cough",
+                "exercise"
             ]
         },
         {
-            "name": "verbGerund",
-            "keyword": "VERBING",
+            "name": "verbIntrans3S",
+            "keyword": "VERB_IS",
+            "words":[
+                "runs",
+                "sings",
+                "talks",
+                "walks",
+                "counts",
+                "waits",
+                "coughs",
+                "exercises"
+            ]
+        },
+        {
+            "name": "verbTransGerund",
+            "keyword": "VERBING_T",
+            "words":[
+                "loving",
+                "liking",
+                "cleaning",
+                "drinking",
+                "geting",
+                "geting off",
+                "geting on",
+                "making",
+                "pushing",
+                "carrying",
+                "cooking",
+                "taking",
+                "putting on",
+                "listening to",
+                "setting up",
+                "eating",
+                "writing down",
+                "counting",
+                "using",
+                "planting",
+                "brushing",
+                "fixing",
+                "looking at",
+                "pulling",
+                "waiting for",
+                "feeding",
+                "drawing",
+                "reading",
+                "chasing",
+                "shaking",
+                "waving",
+                "choosing",
+                "singing",
+                "riding",
+                "driving",
+                "closing",
+                "washing",
+                "holding",
+                "buying",
+                "picking up",
+                "borrowing",
+                "wiping",
+                "hanging",
+                "painting",
+                "lifting",
+                "receiving",
+                "playing",
+                "opening",
+                "closing",
+                "coming",
+                "going",
+                "crossing",
+                "throwing"
+            ]
+        },
+        {
+            "name": "verbIntransGerund",
+            "keyword": "VERBING_I",
             "words":[
                 "running",
+                "singing",
                 "talking",
-                "walking"
+                "walking",
+                "counting",
+                "waiting",
+                "coughing",
+                "exercising"
             ]
         }
     ]

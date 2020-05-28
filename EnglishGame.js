@@ -4,11 +4,11 @@ var ctx = canvas.getContext("2d");
 var data;
 
 var sentenceStartY = -10;
-var sentenceX = canvas.width/2; var sentenceY = 0;
-var sentenceXOffset = 0;
+//var sentenceX = canvas.width/2; var sentenceY = 0;
+//var sentenceXOffset = 0;
 
 var baseSentenceDx = 0; var baseSentenceDy = 0.25;
-var sentenceDx = baseSentenceDx; var sentenceDy = baseSentenceDy;
+//var sentenceDx = baseSentenceDx; var sentenceDy = baseSentenceDy;
 var wrongSentenceDdy = 0.05;
 var gotWrongAnswer = false;
 
@@ -28,7 +28,15 @@ var answerY = canvas.height - 30;
 var score = 0;
 var lives = 3;
 
-var sentence;
+var sentence = {
+    text: "",
+    x:0,
+    y:0,
+    dx:0,
+    dy:0,
+    xOffset:0
+};
+
 var answerLeft;
 var answerRight;
 var correctAnswer;
@@ -60,10 +68,11 @@ function StartGame(){
     isGameOver = false;
     score = 0;
     lives = 3;
-    sentenceX = canvas.width/2;
-    sentenceY = sentenceStartY;
-    sentenceDx = baseSentenceDx;
-    sentenceDy = baseSentenceDy;
+     
+    sentence.x = canvas.width/2;
+    sentence.y = sentenceStartY;
+    sentence.dx = baseSentenceDx;
+    sentence.dy = baseSentenceDy;
     freq = baseFreq;
 
     GetSentence();
@@ -83,11 +92,6 @@ function Game(){
     if(isPaused){
         if(pauseRemaining <= 0){
             NextSentence();
-            // if(GameOverCheck()){
-            //     GameOver();
-            // }else{
-            //     NextSentence();
-            // }
             isPaused = false;
         }else{
             pauseRemaining--;
@@ -95,28 +99,24 @@ function Game(){
         return;
     }
 
+
     if(gotWrongAnswer){
-        sentenceDy += wrongSentenceDdy;
+        sentence.dy += wrongSentenceDdy;
     }else{
         let amp = 50;
 
-        sentenceXOffset = amp*(Math.sin(freq*ticks + sinOffset));
-        console.log(freq);
+        sentence.xOffset = amp*(Math.sin(freq*ticks + sinOffset));
     }
-    //console.log(sentenceDx);
 
-    sentenceY += sentenceDy;
-    
-    //console.log(sentenceXOffset);
+    sentence.y += sentence.dy;
     
     if(canLaser){
         GetKeys();
     }
     
 
-    if(sentenceY > canvas.height - 60){
+    if(sentence.y > canvas.height - 60){
         lives -= 1;
-        //sentenceY = sentenceStartY;
         CalculateDy();
         canLaser = true;
         gotWrongAnswer = false;
@@ -131,7 +131,9 @@ function Game(){
 }
 
 function GetKeys(){
+    
     if((leftPressed && !leftWasPressed) || (rightPressed && !rightWasPressed)){
+        
         let answer;
         //Left pressed
         if(leftPressed){
@@ -154,13 +156,11 @@ function GetKeys(){
             Incorrect();
         }
         isLaser = pauseTicks;
-        laserX = sentenceX + sentenceXOffset + ctx.measureText(sentence).width/2;
-        laserY = sentenceY;
+        laserX = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
+        laserY = sentence.y;
 
         console.log("Laser X: "+laserX+"; Laser Y: "+laserY);
 
-        //isPaused = true;
-        //pauseRemaining = pauseTicks;
     }
 
 }
@@ -171,15 +171,14 @@ function Correct(){
 }
 
 function Incorrect(){
-    //lives -= 1;
     laserColour = "red";
     canLaser = false;
     gotWrongAnswer = true;
 }
 
 function NextSentence(){
-    sentenceY = sentenceStartY;
-    sentenceXOffset = 0;
+    sentence.y = sentenceStartY;
+    sentence.xOffset = 0;
     ticks = 0;
     sinOffset = Math.random() * 2 * Math.PI;
     freq = baseFreq + score * changeFreq;
@@ -189,7 +188,7 @@ function NextSentence(){
 }
 
 function CalculateDy(){
-    sentenceDy = 0.25 + score * 0.05;
+    sentence.dy = 0.25 + score * 0.05;
 }
 
 function GameOverCheck(){
@@ -199,17 +198,16 @@ function GameOverCheck(){
 function GameOver(){
     isGameOver = true;
     lives = 0;
-    sentenceY = -30;
+    sentence.y = -30;
     isLaser = 0;
 }
 
 function GetSentence(){
     let index = RandIndex(data.sentences.length);
-    sentence = ProcessText(data.sentences[index].text);
+    let text = ProcessText(data.sentences[index].text);
 
-    sentence = sentence[0].toUpperCase() + sentence.slice(1);
+    sentence.text = text[0].toUpperCase() + text.slice(1);
 
-    //sentence = allSentences.sentences[index].text;
     correctAnswer = ProcessText(data.sentences[index].correctAnswer);
     
     //Randomly order the answers
@@ -283,10 +281,8 @@ function drawUI(){
 function drawSentence(){
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
-    //sentenceX = (canvas.width/2) -  (ctx.measureText(sentence).width/2)
-    sentenceX = centreX(sentence, canvas.width/2);
-    //console.log(sentenceX +" "+ sentenceY);
-    ctx.fillText(sentence, sentenceX+sentenceXOffset, sentenceY);
+    sentence.x = centreX(sentence.text, canvas.width/2);
+    ctx.fillText(sentence.text, sentence.x+sentence.xOffset, sentence.y);
 }
 
 function drawAnswers(){
@@ -336,10 +332,13 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e){
+    console.log("Key down handler");
     if(e.key == "Right" || e.key == "ArrowRight"){
+        console.log("Right pressed");
         rightPressed = true;
     }
     if(e.key == "Left" || e.key == "ArrowLeft"){
+        console.log("Left pressed");
         leftPressed = true;
     }
     if(e.key == "Enter" && isGameOver){
@@ -374,7 +373,7 @@ function loadJSON(callback){
     xobj.send(null);
 }
 /**
- * @param {String} text - The date
+ * @param {String} text 
  */
 function ProcessText(text){
     if(!text.includes("%")){
@@ -382,15 +381,19 @@ function ProcessText(text){
     }
 
     // Text includes a % sign
-    
+    //debugger;
     let finishedText = text;
+    console.log("New Sentence is: " + text);
     while(finishedText.includes("%")){
+        console.log("Sentence is currently: " + finishedText);
         let str = finishedText;
         let wildCard = str.split("%")[1];
         let replacement = "";
-
+        
         for(const partOfSpeech of data.partsOfSpeech){
+            console.log(partOfSpeech.name);
             if(wildCard == partOfSpeech.keyword){
+                console.log("Found keyword "+partOfSpeech.keyword);
                 replacement = partOfSpeech.words[RandIndex(partOfSpeech.words.length)];
                 break;
             }
@@ -398,7 +401,7 @@ function ProcessText(text){
         
         finishedText = finishedText.replace("%"+wildCard+"%", replacement);
     }
-
+    console.log("Finished sentence is: " + finishedText);
     return finishedText;
     
 }
