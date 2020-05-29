@@ -85,6 +85,7 @@ var explosion = {
 var correctSound = new sound("laser_shot_correct.mp3");
 var wrongSound = new sound("laser_shot_incorrect.wav");
 var explosionSound = new sound("explosion_large_08.wav");
+var music = new sound("edm-detection-mode-by-kevin-macleod-from-filmmusic-io.mp3");
 
 var isPaused = false;
 var isStart = true;
@@ -94,6 +95,7 @@ function Init(){
         data = JSON.parse(response);
         updateLoop = setInterval(Update, 10);
     });
+    music.play();
 }
 
 function StartGame(){
@@ -285,6 +287,9 @@ function Draw(){
 
     if(isGameOver){
         DrawGameOver();
+        if(explosion.isExplosion){
+            drawExplosion();
+        }
         return;
     }
 
