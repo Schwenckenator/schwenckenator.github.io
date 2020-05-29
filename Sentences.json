@@ -41,17 +41,17 @@
             "wrongAnswer":      "are"
         },
         {
-            "text":             "I like ____.",
+            "text":             "%PRO_NOM_123P% like ____.",
             "correctAnswer":    "%VERBING_I%",
             "wrongAnswer":      "%VERB_I%"
         },
         {
-            "text":             "I like ____.",
+            "text":             "%PRO_NOM_123P% like ____.",
             "correctAnswer":    "%NOUNS%",
             "wrongAnswer":      "%VERB_I%"
         },
         {
-            "text":             "I want a _____ %NOUN%.",
+            "text":             "%PRO_NOM_123P% want a _____ %NOUN%.",
             "correctAnswer":    "%ADJ%",
             "wrongAnswer":      "%VERB_T%"
         }, 
@@ -257,6 +257,16 @@
                 "he",
                 "she",
                 "a %ANI_NOUN%"
+            ]
+        },
+        {
+            "name": "PronounNom1st2nd3rdPlural",
+            "keyword": "PRO_NOM_123P",
+            "words":[
+                "I",
+                "you",
+                "we",
+                "they"
             ]
         },
         {
