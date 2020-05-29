@@ -485,6 +485,7 @@ function sound(src) {
     this.play = function(){
         this.sound.currentTime = 0;
         this.sound.play();
+        console.log("Play sound "+this.sound.src);
     }
     this.stop = function(){
         this.sound.pause();
