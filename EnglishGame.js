@@ -82,6 +82,10 @@ var explosion = {
     }
 }
 
+var correctSound = new sound("laser_shot_correct.mp3");
+var wrongSound = new sound("laser_shot_incorrect.wav");
+var explosionSound = new sound("explosion_large_08.wav");
+
 function Init(){
     loadJSON(function(response){
         data = JSON.parse(response);
@@ -150,6 +154,7 @@ function Game(){
         let x = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
         let y =  sentence.y - 50;
         explosion.StartExp(x,y, 5, 5);
+        explosionSound.play();
         
         if(GameOverCheck()){
             GameOver();
@@ -200,12 +205,14 @@ function Correct(){
     laserColour = "green";
     isPaused = true;
     pauseRemaining = pauseTicks;
+    correctSound.play();
 }
 
 function Incorrect(){
     laserColour = "red";
     canLaser = false;
     gotWrongAnswer = true;
+    wrongSound.play();
 }
 
 function NextSentence(){
@@ -326,7 +333,7 @@ function drawSentence(){
 
 function drawAnswers(){
     if(isGameOver) return;
-    
+
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
     let x = centreX(answerLeft, canvas.width * 0.25);
@@ -466,5 +473,23 @@ function RandIndex(max){
 
 //#endregion
 
+//#region Constructors
 
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.currentTime = 0;
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
+  }
+
+//#endregion
 Init();
