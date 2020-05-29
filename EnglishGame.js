@@ -15,9 +15,9 @@ var baseSentenceDx = 0; var baseSentenceDy = 0.25;
 var wrongSentenceDdy = 0.05;
 var gotWrongAnswer = false;
 
-var pauseTicks = 15;
-var pauseRemaining = 0;
-var isPaused = false;
+var freezeTicks = 15;
+var freezeRemaining = 0;
+var isFrozen = false;
 var ticks = 0;
 var sinOffset = 0;
 var baseFreq = 0.01;
@@ -86,15 +86,18 @@ var correctSound = new sound("laser_shot_correct.mp3");
 var wrongSound = new sound("laser_shot_incorrect.wav");
 var explosionSound = new sound("explosion_large_08.wav");
 
+var isPaused = false;
+var isStart = true;
+
 function Init(){
     loadJSON(function(response){
         data = JSON.parse(response);
-        StartGame();
         updateLoop = setInterval(Update, 10);
     });
 }
 
 function StartGame(){
+    isStart = false;
     isGameOver = false;
     score = 0;
     lives = 3;
@@ -110,8 +113,7 @@ function StartGame(){
 
 function Update(){
     Draw();
-    
-    if(!isGameOver){
+    if(!isStart && !isGameOver){
         Game();
     }
 }
@@ -119,12 +121,12 @@ function Update(){
 //#region Game
 
 function Game(){
-    if(isPaused){
-        if(pauseRemaining <= 0){
+    if(isFrozen){
+        if(freezeRemaining <= 0){
             NextSentence();
-            isPaused = false;
+            isFrozen = false;
         }else{
-            pauseRemaining--;
+            freezeRemaining--;
         }
         return;
     }
@@ -183,7 +185,7 @@ function GetKeys(){
             chosenAnswerIndex = 1;
         }
 
-        isLaser = pauseTicks;
+        isLaser = freezeTicks;
         laserX = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
         laserY = sentence.y;
         
@@ -203,8 +205,8 @@ function GetKeys(){
 function Correct(){
     score += 1;
     laserColour = "green";
-    isPaused = true;
-    pauseRemaining = pauseTicks;
+    isFrozen = true;
+    freezeRemaining = freezeTicks;
     correctSound.play();
 }
 
@@ -269,6 +271,23 @@ function GetSentence(){
 function Draw(){
     ctx.clearRect(0,0, canvas.width, canvas.height);
 
+    if(isStart){
+        DrawStartMenu();
+        return;
+    }
+
+    if(isPaused){
+        DrawPaused();
+        return;
+    }
+
+
+
+    if(isGameOver){
+        DrawGameOver();
+        return;
+    }
+
     drawSentence();
     drawUI();
     drawAnswers();
@@ -279,6 +298,56 @@ function Draw(){
     if(explosion.isExplosion){
         drawExplosion();
     }
+}
+
+function DrawPaused(){
+
+    ctx.font = "48px Arial";
+    ctx.fillStyle = "#000000";
+    let txt = "PAUSED";
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2 - 40);
+
+    ctx.font = "24px Arial"
+    txt = "Press Escape to continue.";
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2);
+}
+
+function DrawGameOver(){
+    
+    ctx.font = "48px Arial";
+    ctx.fillStyle = "#000000";
+    let txt = "GAME OVER";
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2 - 40);
+    ctx.font = "24px Arial"
+    txt = "Final Score: "+score;
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2);
+    ctx.font = "24px Arial"
+    txt = "Press Enter to restart.";
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2 + 40);
+}
+
+function DrawStartMenu(){
+    let txt;
+
+    ctx.font = "48px Arial";
+    ctx.fillStyle = "#000000";
+    txt = "ENGLISH";
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2 - 40);
+
+    txt = "GRAMMAR BATTLE";
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2 + 5);
+
+    ctx.font = "24px Arial"
+    txt = "Press Enter to start.";
+    x = centreX(txt, canvas.width/2);
+    ctx.fillText(txt,x,canvas.height/2 + 40);
 }
 
 function drawUI(){
@@ -302,26 +371,11 @@ function drawUI(){
     ctx.stroke();
     ctx.closePath();
 
-    if(isGameOver){
-        ctx.font = "48px Arial";
-        ctx.fillStyle = "#000000";
-        let txt = "GAME OVER";
-        x = centreX(txt, canvas.width/2);
-        ctx.fillText(txt,x,canvas.height/2 - 40);
-        ctx.font = "24px Arial"
-        txt = "Final Score: "+score;
-        x = centreX(txt, canvas.width/2);
-        ctx.fillText(txt,x,canvas.height/2);
-        ctx.font = "24px Arial"
-        txt = "Press Enter to restart.";
-        x = centreX(txt, canvas.width/2);
-        ctx.fillText(txt,x,canvas.height/2 + 40);
-    }else{
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#000000";
-        ctx.fillText("Score: "+score, 8, 20);
-        ctx.fillText("Lives: "+lives, 8, 40);
-    }
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Score: "+score, 8, 20);
+    ctx.fillText("Lives: "+lives, 8, 40);
+    
 }
 
 function drawSentence(){
@@ -402,8 +456,12 @@ function keyDownHandler(e){
         console.log("Left pressed");
         leftPressed = true;
     }
-    if(e.key == "Enter" && isGameOver){
+    if(e.key == "Enter" && (isGameOver || isStart)){
         StartGame();
+    }
+    if(e.key == "Escape" || e.key == "Esc"){
+        console.log("Escape pressed");
+        isPaused = !isPaused;
     }
 }
 
