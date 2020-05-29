@@ -474,12 +474,16 @@ function keyDownHandler(e){
     }
     if(e.key == "Escape" || e.key == "Esc"){
         console.log("Escape pressed");
-        isPaused = !isPaused;
-        if(isPaused){
-            music.stop();
-        }else{
-            music.play();
-        }
+        TogglePause();
+    }
+}
+
+function TogglePause(){
+    isPaused = !isPaused;
+    if(isPaused){
+        music.stop();
+    }else{
+        music.play();
     }
 }
 
@@ -491,6 +495,32 @@ function keyUpHandler(e){
     if(e.key == "Left" || e.key == "ArrowLeft"){
         leftPressed = false;
         leftWasPressed = false;
+    }
+}
+
+document.addEventListener("touchstart", touchHandler, false);
+//document.addEventListener("touchmove", touchMove, false);
+
+function touchHandler(e){
+    if(e.touches) {
+        
+        if(isStart || isGameOver){
+            e.preventDefault();
+            StartGame();
+            return;
+        }
+        if(isPaused){
+            e.preventDefault();
+            TogglePause();
+            return;
+        }
+
+
+        
+        // playerX = e.touches[0].pageX - canvas.offsetLeft - playerWidth / 2;
+        // playerY = e.touches[0].pageY - canvas.offsetTop - playerHeight / 2;
+        // output.innerHTML = "Touch: "+ " x: " + playerX + ", y: " + playerY;
+        e.preventDefault();
     }
 }
 

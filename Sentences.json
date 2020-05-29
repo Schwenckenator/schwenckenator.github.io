@@ -27,13 +27,13 @@
         },
         {
             "text":             "%PRO_NOM_3S% is ______ with a %NOUN%.",
-            "correctAnswer":    "%VERBING_T%",
-            "wrongAnswer":      "%VERB_T%"
+            "correctAnswer":    "%VERBING_I%",
+            "wrongAnswer":      "%VERB_I%"
         },
         {
             "text":             "%PRO_NOM_3S% is ______ with %NOUNS%.",
-            "correctAnswer":    "%VERBING_T%",
-            "wrongAnswer":      "%VERB_T%"
+            "correctAnswer":    "%VERBING_I%",
+            "wrongAnswer":      "%VERB_I%"
         },
         {
             "text":             "Hello, my name ___ %NOUN%.",
@@ -67,11 +67,6 @@
         },
         {
             "text":             "%PRO_NOM_3S% ____ %NOUNS%.",
-            "correctAnswer":    "%VERB_TS%",
-            "wrongAnswer":      "%VERB_T%"
-        },
-        {
-            "text":             "%PRO_NOM_3S% _____ %NOUNS%.",
             "correctAnswer":    "%VERB_TS%",
             "wrongAnswer":      "%VERB_T%"
         },
