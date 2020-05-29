@@ -95,10 +95,16 @@ function Init(){
         data = JSON.parse(response);
         updateLoop = setInterval(Update, 10);
     });
-    music.play();
+    
 }
 
 function StartGame(){
+    if(isStart){
+        //First time
+        music.play();
+        music.sound.loop = true;
+    }
+
     isStart = false;
     isGameOver = false;
     score = 0;
@@ -123,6 +129,8 @@ function Update(){
 //#region Game
 
 function Game(){
+    if(isPaused) return;
+
     if(isFrozen){
         if(freezeRemaining <= 0){
             NextSentence();
@@ -158,7 +166,7 @@ function Game(){
         let x = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
         let y =  sentence.y - 50;
         explosion.StartExp(x,y, 5, 5);
-        explosionSound.play();
+        explosionSound.playFromStart();
         
         if(GameOverCheck()){
             GameOver();
@@ -209,14 +217,14 @@ function Correct(){
     laserColour = "green";
     isFrozen = true;
     freezeRemaining = freezeTicks;
-    correctSound.play();
+    correctSound.playFromStart();
 }
 
 function Incorrect(){
     laserColour = "red";
     canLaser = false;
     gotWrongAnswer = true;
-    wrongSound.play();
+    wrongSound.playFromStart();
 }
 
 function NextSentence(){
@@ -467,6 +475,11 @@ function keyDownHandler(e){
     if(e.key == "Escape" || e.key == "Esc"){
         console.log("Escape pressed");
         isPaused = !isPaused;
+        if(isPaused){
+            music.stop();
+        }else{
+            music.play();
+        }
     }
 }
 
@@ -545,8 +558,12 @@ function sound(src) {
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
-    this.play = function(){
+    this.playFromStart = function(){
         this.sound.currentTime = 0;
+        this.sound.play();
+        console.log("Play sound from start"+this.sound.src);
+    }
+    this.play = function(){
         this.sound.play();
         console.log("Play sound "+this.sound.src);
     }
