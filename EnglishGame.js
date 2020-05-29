@@ -1,5 +1,8 @@
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
+var explosionSheet = document.getElementById("explosion");
+const explSpriteSize = 64;
+const expColNum = 4;
 
 var data;
 
@@ -30,11 +33,11 @@ var lives = 3;
 
 var sentence = {
     text: "",
-    x:0,
-    y:0,
-    dx:0,
-    dy:0,
-    xOffset:0
+    x: 0,
+    y: 0,
+    dx: 0,
+    dy: 0,
+    xOffset: 0
 };
 
 var answerLeft;
@@ -55,6 +58,28 @@ var isLaser = 0;
 var laserColour = "green";
 var laserX;
 var laserY;
+
+var explosion = {
+    isExplosion: false,
+    frameNumber: 0,
+    totalFrames: 16,
+    pos: { x:0, y:0 },
+    scale: { x:1, y:1 },
+    GetFrameCrop: function(num){
+        let x = (num % expColNum) * explSpriteSize;
+        let y = Math.floor(num / expColNum) * explSpriteSize;
+        return { x:x, y:y };
+    },
+    StartExp: function(x, y, sx=1, sy=1){
+        this.frameNumber = 0;
+        this.isExplosion = true;
+        this.scale.x = sx;
+        this.scale.y = sy;
+        this.pos.x = x - (explSpriteSize / 2) * sx;
+        this.pos.y = y - (explSpriteSize / 2) * sy;
+
+    }
+}
 
 function Init(){
     loadJSON(function(response){
@@ -120,6 +145,10 @@ function Game(){
         CalculateDy();
         canLaser = true;
         gotWrongAnswer = false;
+
+        let x = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
+        let y =  sentence.y - 50;
+        explosion.StartExp(x,y, 5, 5);
         
         if(GameOverCheck()){
             GameOver();
@@ -148,16 +177,16 @@ function GetKeys(){
             chosenAnswerIndex = 1;
         }
 
-        if(answer === correctAnswer){
-            Correct();
-            isPaused = true;
-            pauseRemaining = pauseTicks;
-        }else{
-            Incorrect();
-        }
         isLaser = pauseTicks;
         laserX = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
         laserY = sentence.y;
+        
+        if(answer === correctAnswer){
+            Correct();
+            explosion.StartExp(laserX, laserY);
+        }else{
+            Incorrect();
+        }
 
         console.log("Laser X: "+laserX+"; Laser Y: "+laserY);
 
@@ -168,6 +197,8 @@ function GetKeys(){
 function Correct(){
     score += 1;
     laserColour = "green";
+    isPaused = true;
+    pauseRemaining = pauseTicks;
 }
 
 function Incorrect(){
@@ -236,6 +267,9 @@ function Draw(){
     if(isLaser > 0){
         isLaser--;
         drawLaser();
+    }
+    if(explosion.isExplosion){
+        drawExplosion();
     }
 }
 
@@ -311,14 +345,27 @@ function drawLaser(){
     //ctx.fill();
     ctx.stroke();
     ctx.closePath();
-    
-    ctx.beginPath();
-    ctx.fillStyle = "orange";
-    ctx.arc(laserX, laserY, 20, 0, Math.PI*2);
-    ctx.fill();
-    ctx.closePath();
+}
 
+function drawExplosion(){
+    let coords = explosion.GetFrameCrop(explosion.frameNumber);
     
+    ctx.drawImage(
+        explosionSheet, 
+        coords.x, 
+        coords.y, 
+        explSpriteSize, 
+        explSpriteSize, 
+        explosion.pos.x, 
+        explosion.pos.y, 
+        explSpriteSize * explosion.scale.x, 
+        explSpriteSize * explosion.scale.x
+    );
+    
+    explosion.frameNumber++;
+    if(explosion.frameNumber >= explosion.totalFrames){
+        explosion.isExplosion = false;
+    }
 }
 
 function centreX(text, x){
@@ -411,4 +458,6 @@ function RandIndex(max){
 }
 
 //#endregion
+
+
 Init();
