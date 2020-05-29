@@ -1,37 +1,37 @@
 {
     "sentences":[
         {
-            "text":             "A %ANI_NOUN% is ______ %NOUNS%.",
+            "text":             "%PRO_NOM_3S% is ______ %NOUNS%.",
             "correctAnswer":    "%VERBING_T%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
-            "text":             "A %ANI_NOUN% is ______ a %NOUN%.",
+            "text":             "%PRO_NOM_3S% is ______ a %NOUN%.",
             "correctAnswer":    "%VERBING_T%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
-            "text":             "A %ANI_NOUN% is ______ the %NOUN%.",
+            "text":             "%PRO_NOM_3S% is ______ the %NOUN%.",
             "correctAnswer":    "%VERBING_T%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
-            "text":             "A %ANI_NOUN% is ______ the %NOUNS%.",
+            "text":             "%PRO_NOM_3S% is ______ the %NOUNS%.",
             "correctAnswer":    "%VERBING_T%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
-            "text":             "A %ANI_NOUN% is ______ some %NOUNS%.",
+            "text":             "%PRO_NOM_3S% is ______ some %NOUNS%.",
             "correctAnswer":    "%VERBING_T%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
-            "text":             "A %ANI_NOUN% is ______ with a %NOUN%.",
+            "text":             "%PRO_NOM_3S% is ______ with a %NOUN%.",
             "correctAnswer":    "%VERBING_T%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
-            "text":             "A %ANI_NOUN% is ______ with %NOUNS%.",
+            "text":             "%PRO_NOM_3S% is ______ with %NOUNS%.",
             "correctAnswer":    "%VERBING_T%",
             "wrongAnswer":      "%VERB_T%"
         },
@@ -66,12 +66,12 @@
             "wrongAnswer":      "%VERBING_I%"
         },
         {
-            "text":             "He ____ %NOUNS%.",
+            "text":             "%PRO_NOM_3S% ____ %NOUNS%.",
             "correctAnswer":    "%VERB_TS%",
             "wrongAnswer":      "%VERB_T%"
         },
         {
-            "text":             "She _____ %NOUNS%.",
+            "text":             "%PRO_NOM_3S% _____ %NOUNS%.",
             "correctAnswer":    "%VERB_TS%",
             "wrongAnswer":      "%VERB_T%"
         },
@@ -253,6 +253,15 @@
                 "shoes",
                 "trash",
                 "rubbish"
+            ]
+        },
+        {
+            "name": "PronounNom3rdSingular",
+            "keyword": "PRO_NOM_3S",
+            "words":[
+                "he",
+                "she",
+                "a %ANI_NOUN%"
             ]
         },
         {

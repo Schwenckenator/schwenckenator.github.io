@@ -66,11 +66,12 @@ var explosion = {
     pos: { x:0, y:0 },
     scale: { x:1, y:1 },
     GetFrameCrop: function(num){
+        num = Math.floor(num);
         let x = (num % expColNum) * explSpriteSize;
         let y = Math.floor(num / expColNum) * explSpriteSize;
         return { x:x, y:y };
     },
-    StartExp: function(x, y, sx=1, sy=1){
+    StartExp: function(x, y, sx=2, sy=2){
         this.frameNumber = 0;
         this.isExplosion = true;
         this.scale.x = sx;
@@ -274,11 +275,6 @@ function Draw(){
 }
 
 function drawUI(){
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#000000";
-    ctx.fillText("Score: "+score, 8, 20);
-    ctx.fillText("Lives: "+lives, 8, 40);
-
     ctx.beginPath();
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = "3";
@@ -304,11 +300,20 @@ function drawUI(){
         ctx.fillStyle = "#000000";
         let txt = "GAME OVER";
         x = centreX(txt, canvas.width/2);
+        ctx.fillText(txt,x,canvas.height/2 - 40);
+        ctx.font = "24px Arial"
+        txt = "Final Score: "+score;
+        x = centreX(txt, canvas.width/2);
         ctx.fillText(txt,x,canvas.height/2);
         ctx.font = "24px Arial"
         txt = "Press Enter to restart.";
         x = centreX(txt, canvas.width/2);
         ctx.fillText(txt,x,canvas.height/2 + 40);
+    }else{
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Score: "+score, 8, 20);
+        ctx.fillText("Lives: "+lives, 8, 40);
     }
 }
 
@@ -320,6 +325,8 @@ function drawSentence(){
 }
 
 function drawAnswers(){
+    if(isGameOver) return;
+    
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
     let x = centreX(answerLeft, canvas.width * 0.25);
@@ -362,7 +369,7 @@ function drawExplosion(){
         explSpriteSize * explosion.scale.x
     );
     
-    explosion.frameNumber++;
+    explosion.frameNumber += 0.5; //Play at half speed
     if(explosion.frameNumber >= explosion.totalFrames){
         explosion.isExplosion = false;
     }
