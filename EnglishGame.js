@@ -1,8 +1,13 @@
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 var explosionSheet = document.getElementById("explosion");
+var nightSky = document.getElementById("nightSky");
 const explSpriteSize = 64;
 const expColNum = 4;
+const textColour = "#EEEEEE";
+const uiColour = "#EEEEEE";
+const textFlashColour = "#FF0000";
+const backgroundColour = "#000936"
 
 var data;
 
@@ -22,6 +27,7 @@ var changeFreq = 0.001;
 var freq = baseFreq;
 
 var chosenAnswerIndex = 0;
+var chosenAnswer;
 var answerX = [canvas.width * 0.25, canvas.width * 0.75];
 var answerY = canvas.height - 30;
 
@@ -41,7 +47,8 @@ var answerLeft = new answer("", 0);
 var answerRight = new answer("", 1);
 var correctAnswer;
 var isMoveAnswer = false;
-var answerMoveTime = 0.5; //seconds
+var answerMoveTime = 50; //ticks
+var answerMoveTicksRemaining = 50;
 
 var rightPressed = false;
 var leftPressed = false;
@@ -52,7 +59,7 @@ var updateLoop;
 
 var isGameOver = false;
 
-var canLaser = true;
+var canAnswer = true;
 var isLaser = 0;
 var laserColour = "green";
 var laserX;
@@ -139,9 +146,23 @@ function Game(){
         }
         return;
     }
+    if(isMoveAnswer){
+        chosenAnswer.x += chosenAnswer.dx;
+        chosenAnswer.y += chosenAnswer.dy;
+        if(answerMoveTicksRemaining-- <= 0){
+            CheckAnswer();
+            isMoveAnswer = false;
+            chosenAnswer.dy = 0;
+            chosenAnswer.dx = 0;
+        }
+        return;
+    }
+    
 
     if(gotWrongAnswer){
         sentence.dy += wrongSentenceDdy;
+        chosenAnswer.dy += wrongSentenceDdy;
+        chosenAnswer.y += chosenAnswer.dy;
     }else{
         let amp = 50;
         sentence.xOffset = amp*(Math.sin(freq*tick + sinOffset));
@@ -149,14 +170,14 @@ function Game(){
 
     sentence.y += sentence.dy;
     
-    if(canLaser){
+    if(canAnswer){
         GetKeys();
     }
     
     if(sentence.y > canvas.height - 60){
         lives -= 1;
         CalculateDy();
-        canLaser = true;
+        canAnswer = true;
         gotWrongAnswer = false;
 
         let x = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
@@ -177,35 +198,43 @@ function GetKeys(){
     
     if((leftPressed && !leftWasPressed) || (rightPressed && !rightWasPressed)){
         
-        let chosenAnswer;
+        //let chosenAnswer;
         //Left pressed
         if(leftPressed){
             leftWasPressed = true; 
-            chosenAnswer = answerLeft.text;
+            chosenAnswer = answerLeft;
             chosenAnswerIndex = 0;
         }
         //Right pressed
         if(rightPressed){
             rightWasPressed = true;
-            chosenAnswer = answerRight.text;
+            chosenAnswer = answerRight;
             chosenAnswerIndex = 1;
         }
 
-        isLaser = freezeTicks;
+        //isLaser = freezeTicks;
         laserX = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
         laserY = sentence.y;
-        
-        if(chosenAnswer === correctAnswer){
-            Correct();
-            explosion.StartExp(laserX, laserY);
-        }else{
-            Incorrect();
-        }
+
+        let senX = sentence.x+sentence.xOffset + ctx.measureText(sentence.text).width/2
+
+        SetAnswerDxDy(chosenAnswer.x, chosenAnswer.y, senX, sentence.y, answerMoveTime);
+        isMoveAnswer = true;
+
 
         console.log("Laser X: "+laserX+"; Laser Y: "+laserY);
 
     }
 
+}
+
+function CheckAnswer(){
+    if(chosenAnswer.text === correctAnswer){
+        Correct();
+        explosion.StartExp(laserX, laserY);
+    }else{
+        Incorrect();
+    }
 }
 
 function Correct(){
@@ -214,11 +243,12 @@ function Correct(){
     isFrozen = true;
     freezeRemaining = freezeTicks;
     correctSound.playFromStart();
+    
 }
 
 function Incorrect(){
     laserColour = "red";
-    canLaser = false;
+    canAnswer = false;
     gotWrongAnswer = true;
     wrongSound.playFromStart();
 }
@@ -268,6 +298,11 @@ function GetSentence(){
     }
 }
 
+function SetAnswerDxDy(ansX, ansY, senX, senY, moveTime){
+    chosenAnswer.dx = (senX - ansX) / moveTime;
+    chosenAnswer.dy = (senY - ansY) / moveTime;
+    answerMoveTicksRemaining = moveTime;
+}
 
 
 //#endregion
@@ -276,6 +311,7 @@ function GetSentence(){
 
 function Draw(){
     ctx.clearRect(0,0, canvas.width, canvas.height);
+    ctx.drawImage(nightSky, 0, 0);
 
     if(isStart){
         DrawStartMenu();
@@ -312,7 +348,7 @@ function Draw(){
 function DrawPaused(){
 
     ctx.font = "48px Arial";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = textColour;
     let txt = "PAUSED";
     x = centreX(txt, canvas.width/2);
     ctx.fillText(txt,x,canvas.height/2 - 40);
@@ -326,7 +362,7 @@ function DrawPaused(){
 function DrawGameOver(){
     
     ctx.font = "48px Arial";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = textColour;
     let txt = "GAME OVER";
     x = centreX(txt, canvas.width/2);
     ctx.fillText(txt,x,canvas.height/2 - 40);
@@ -344,7 +380,7 @@ function DrawStartMenu(){
     let txt;
 
     ctx.font = "48px Arial";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = uiColour;
     txt = "ENGLISH";
     x = centreX(txt, canvas.width/2);
     ctx.fillText(txt,x,canvas.height/2 - 40);
@@ -361,7 +397,12 @@ function DrawStartMenu(){
 
 function drawUI(){
     ctx.beginPath();
-    ctx.strokeStyle = "#000000";
+
+    ctx.fillStyle = backgroundColour;
+    ctx.rect(0, canvas.height - 60, canvas.width, 60);
+    ctx.fill();
+
+    ctx.strokeStyle = uiColour;
     ctx.lineWidth = "3";
     
     let x1 = 0;
@@ -381,7 +422,7 @@ function drawUI(){
     ctx.closePath();
 
     ctx.font = "16px Arial";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = uiColour;
     ctx.fillText("Score: "+score, 8, 20);
     ctx.fillText("Lives: "+lives, 8, 40);
     
@@ -389,7 +430,7 @@ function drawUI(){
 
 function drawSentence(){
     ctx.font = "24px Arial";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = textColour;
     sentence.x = centreX(sentence.text, canvas.width/2);
     ctx.fillText(sentence.text, sentence.x+sentence.xOffset, sentence.y);
 }
@@ -398,12 +439,12 @@ function drawAnswers(){
     if(isGameOver) return;
 
     ctx.font = "24px Arial";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = textColour;
     let x = centreX(answerLeft.text, answerLeft.x);
     ctx.fillText(answerLeft.text, x, answerLeft.y);
     
     ctx.font = "24px Arial";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = textColour;
     x = centreX(answerRight.text, answerRight.x);
     ctx.fillText(answerRight.text, x, answerRight.y);
 
@@ -605,7 +646,9 @@ function answer(txt, pos){
         baseX: canvas.width * (0.25 + 0.5*pos),
         baseY: canvas.height - 30,
         x: canvas.width * (0.25 + 0.5*pos),
-        y: canvas.height - 30
+        y: canvas.height - 30,
+        dx: 0,
+        dy: 0
     }
     console.log(ans);
     return ans;
