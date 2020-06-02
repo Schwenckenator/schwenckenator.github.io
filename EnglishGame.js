@@ -7,18 +7,15 @@ const expColNum = 4;
 var data;
 
 var sentenceStartY = -10;
-//var sentenceX = canvas.width/2; var sentenceY = 0;
-//var sentenceXOffset = 0;
 
 var baseSentenceDx = 0; var baseSentenceDy = 0.25;
-//var sentenceDx = baseSentenceDx; var sentenceDy = baseSentenceDy;
 var wrongSentenceDdy = 0.05;
 var gotWrongAnswer = false;
 
 var freezeTicks = 15;
 var freezeRemaining = 0;
 var isFrozen = false;
-var ticks = 0;
+var tick = 0;
 var sinOffset = 0;
 var baseFreq = 0.01;
 var changeFreq = 0.001;
@@ -40,9 +37,11 @@ var sentence = {
     xOffset: 0
 };
 
-var answerLeft;
-var answerRight;
+var answerLeft = new answer("", 0);
+var answerRight = new answer("", 1);
 var correctAnswer;
+var isMoveAnswer = false;
+var answerMoveTime = 0.5; //seconds
 
 var rightPressed = false;
 var leftPressed = false;
@@ -141,13 +140,11 @@ function Game(){
         return;
     }
 
-
     if(gotWrongAnswer){
         sentence.dy += wrongSentenceDdy;
     }else{
         let amp = 50;
-
-        sentence.xOffset = amp*(Math.sin(freq*ticks + sinOffset));
+        sentence.xOffset = amp*(Math.sin(freq*tick + sinOffset));
     }
 
     sentence.y += sentence.dy;
@@ -156,7 +153,6 @@ function Game(){
         GetKeys();
     }
     
-
     if(sentence.y > canvas.height - 60){
         lives -= 1;
         CalculateDy();
@@ -174,24 +170,24 @@ function Game(){
             NextSentence();
         }
     }
-    ticks++;
+    tick++;
 }
 
 function GetKeys(){
     
     if((leftPressed && !leftWasPressed) || (rightPressed && !rightWasPressed)){
         
-        let answer;
+        let chosenAnswer;
         //Left pressed
         if(leftPressed){
             leftWasPressed = true; 
-            answer = answerLeft;
+            chosenAnswer = answerLeft.text;
             chosenAnswerIndex = 0;
         }
         //Right pressed
         if(rightPressed){
             rightWasPressed = true;
-            answer = answerRight;
+            chosenAnswer = answerRight.text;
             chosenAnswerIndex = 1;
         }
 
@@ -199,7 +195,7 @@ function GetKeys(){
         laserX = sentence.x + sentence.xOffset + ctx.measureText(sentence.text).width/2;
         laserY = sentence.y;
         
-        if(answer === correctAnswer){
+        if(chosenAnswer === correctAnswer){
             Correct();
             explosion.StartExp(laserX, laserY);
         }else{
@@ -230,7 +226,7 @@ function Incorrect(){
 function NextSentence(){
     sentence.y = sentenceStartY;
     sentence.xOffset = 0;
-    ticks = 0;
+    tick = 0;
     sinOffset = Math.random() * 2 * Math.PI;
     freq = baseFreq + score * changeFreq;
     CalculateDy();
@@ -260,15 +256,15 @@ function GetSentence(){
     sentence.text = text[0].toUpperCase() + text.slice(1);
 
     correctAnswer = ProcessText(data.sentences[index].correctAnswer);
-    
+    wrongAnswer = ProcessText(data.sentences[index].wrongAnswer);
     //Randomly order the answers
-    let order = Math.random() >= 0.5;
-    if(order){
-        answerLeft = correctAnswer;
-        answerRight = ProcessText(data.sentences[index].wrongAnswer);
+    let isLeftCorrect = Math.random() >= 0.5;
+    if(isLeftCorrect){
+        answerLeft = new answer(correctAnswer, 0);
+        answerRight = new answer(wrongAnswer, 1);
     }else{
-        answerRight = correctAnswer;
-        answerLeft = ProcessText(data.sentences[index].wrongAnswer);
+        answerLeft = new answer(wrongAnswer, 0);
+        answerRight = new answer(correctAnswer, 1);
     }
 }
 
@@ -403,13 +399,13 @@ function drawAnswers(){
 
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
-    let x = centreX(answerLeft, canvas.width * 0.25);
-    ctx.fillText(answerLeft, x, answerY);
+    let x = centreX(answerLeft.text, answerLeft.x);
+    ctx.fillText(answerLeft.text, x, answerLeft.y);
     
     ctx.font = "24px Arial";
     ctx.fillStyle = "#000000";
-    x = centreX(answerRight, canvas.width * 0.75);
-    ctx.fillText(answerRight, x, answerY);
+    x = centreX(answerRight.text, answerRight.x);
+    ctx.fillText(answerRight.text, x, answerRight.y);
 
 }
 
@@ -602,5 +598,19 @@ function sound(src) {
     }
   }
 
+function answer(txt, pos){
+    console.log("Answer function called");
+    let ans = {
+        text: txt,
+        baseX: canvas.width * (0.25 + 0.5*pos),
+        baseY: canvas.height - 30,
+        x: canvas.width * (0.25 + 0.5*pos),
+        y: canvas.height - 30
+    }
+    console.log(ans);
+    return ans;
+}
+
 //#endregion
+
 Init();
