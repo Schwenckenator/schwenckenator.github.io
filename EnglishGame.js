@@ -243,7 +243,8 @@ function Correct(){
     isFrozen = true;
     freezeRemaining = freezeTicks;
     correctSound.playFromStart();
-    
+    sentence.y = sentenceStartY;
+    chosenAnswer.y = sentenceStartY;
 }
 
 function Incorrect(){
@@ -498,6 +499,15 @@ document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e){
     console.log("Key down handler");
+
+    if(e.key == "Escape" || e.key == "Esc"){
+        console.log("Escape pressed");
+        if(!isStart){
+            TogglePause();
+        }
+    }
+    if(isPaused) return;
+    
     if(e.key == "Right" || e.key == "ArrowRight"){
         console.log("Right pressed");
         rightPressed = true;
@@ -509,10 +519,7 @@ function keyDownHandler(e){
     if(e.key == "Enter" && (isGameOver || isStart)){
         StartGame();
     }
-    if(e.key == "Escape" || e.key == "Esc"){
-        console.log("Escape pressed");
-        TogglePause();
-    }
+
 }
 
 function TogglePause(){
