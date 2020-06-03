@@ -41,6 +41,16 @@
             "wrongAnswer":      "are"
         },
         {
+            "text":             "You ___ a %NOUN%.",
+            "correctAnswer":    "are",
+            "wrongAnswer":      "is"
+        },
+        {
+            "text":             "They ___ %NOUNS%.",
+            "correctAnswer":    "are",
+            "wrongAnswer":      "am"
+        },
+        {
             "text":             "%PRO_NOM_123P% like ____.",
             "correctAnswer":    "%VERBING_I%",
             "wrongAnswer":      "%VERB_I%"
