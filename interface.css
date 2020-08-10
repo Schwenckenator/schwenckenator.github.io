@@ -1,3 +1,12 @@
 body{
     background-color: lightblue;
+    font-size: large;
+    color: #111111;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title{
+    font-size: xx-large;
+    color: #111111;
+    text-align: center;
 }
